@@ -26,8 +26,11 @@ def create_app():
         from app.routes.auth import auth_bp
         app.register_blueprint(auth_bp)
 
-        from app.routes.dashboard import dashboard_bp   
-        app.register_blueprint(dashboard_bp)           
+        from app.routes.dashboard import dashboard_bp
+        app.register_blueprint(dashboard_bp)
+
+        from app.routes.casos import casos_bp
+        app.register_blueprint(casos_bp)
 
     @app.route("/")
     def hello():

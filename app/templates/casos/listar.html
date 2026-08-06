@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block titulo %}Mis casos{% endblock %}
+
+{% block contenido %}
+    <h2>Mis casos</h2>
+    <a href="{{ url_for('casos.crear') }}">+ Nuevo caso</a>
+
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Expediente</th>
+            <th>Título</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th></th>
+        </tr>
+        {% for caso in casos %}
+        <tr>
+            <td>{{ caso.numero_expediente }}</td>
+            <td>{{ caso.titulo }}</td>
+            <td>{{ caso.tipo }}</td>
+            <td>{{ caso.estado }}</td>
+            <td><a href="{{ url_for('casos.detalle', caso_id=caso.id) }}">Ver</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">Todavía no tenés casos cargados.</td></tr>
+        {% endfor %}
+    </table>
+{% endblock %}

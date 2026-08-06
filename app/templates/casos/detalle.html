@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ caso.titulo }}{% endblock %}
+
+{% block contenido %}
+    <h2>{{ caso.titulo }}</h2>
+    <p><strong>Expediente:</strong> {{ caso.numero_expediente }}</p>
+    <p><strong>Tipo:</strong> {{ caso.tipo }}</p>
+    <p><strong>Estado:</strong> {{ caso.estado }}</p>
+    <p><strong>Descripción:</strong> {{ caso.descripcion or "Sin descripción" }}</p>
+
+    <a href="{{ url_for('casos.editar', caso_id=caso.id) }}">Editar</a> |
+    <a href="{{ url_for('casos.listar') }}">Volver al listado</a>
+{% endblock %}

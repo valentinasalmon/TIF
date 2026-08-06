@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block titulo %}Nuevo caso{% endblock %}
+
+{% block contenido %}
+    <h2>Nuevo caso</h2>
+    <form method="POST">
+        <input type="text" name="numero_expediente" placeholder="Número de expediente" required><br>
+        <input type="text" name="titulo" placeholder="Título" required><br>
+        <textarea name="descripcion" placeholder="Descripción"></textarea><br>
+        <select name="tipo" required>
+            <option value="transito">Accidente de tránsito</option>
+            <option value="laboral">Accidente laboral</option>
+        </select><br>
+        <button type="submit">Crear caso</button>
+    </form>
+{% endblock %}
