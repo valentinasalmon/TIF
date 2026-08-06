@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block titulo %}Dashboard{% endblock %}
+
+{% block contenido %}
+    <h2>Panel principal</h2>
+    <p>Bienvenido/a, {{ usuario.nombre }}.</p>
+    <p>Tu rol es: <strong>{{ usuario.rol }}</strong></p>
+
+    {% if usuario.rol == "administrador" %}
+        <p><a href="#">Gestión de usuarios</a> (próximamente)</p>
+    {% endif %}
+
+    <p><a href="#">Mis casos</a> (próximamente)</p>
+{% endblock %}

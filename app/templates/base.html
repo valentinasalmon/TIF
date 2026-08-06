@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block titulo %}Sistema de Detección de IA{% endblock %}</title>
+</head>
+<body>
+    <nav>
+        {% if current_user.is_authenticated %}
+            <span>Hola, {{ current_user.nombre }} ({{ current_user.rol }})</span> |
+            <a href="{{ url_for('dashboard.index') }}">Dashboard</a> |
+            <a href="{{ url_for('auth.logout') }}">Cerrar sesión</a>
+        {% else %}
+            <a href="{{ url_for('auth.login') }}">Iniciar sesión</a>
+        {% endif %}
+    </nav>
+    <hr>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    {% block contenido %}{% endblock %}
+</body>
+</html>
