@@ -1,7 +1,10 @@
-from app import db
-from flask_login import UserMixin
 from datetime import datetime
+
 import bcrypt
+from flask_login import UserMixin
+
+from app import db, login_manager
+
 
 class Usuario(UserMixin, db.Model):
     __tablename__ = "usuarios"
@@ -10,11 +13,13 @@ class Usuario(UserMixin, db.Model):
     nombre = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
-    rol = db.Column(db.String(20), nullable=False, default="perito")  # perito, abogado, aseguradora, administrador
+    # perito, abogado, aseguradora, administrador
+    rol = db.Column(db.String(20), nullable=False, default="perito")
     fecha_creacion = db.Column(db.DateTime, default=datetime.utcnow)
 
     def set_password(self, password):
-        self.password_hash = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+        hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+        self.password_hash = hashed.decode("utf-8")
 
     def check_password(self, password):
         return bcrypt.checkpw(password.encode("utf-8"), self.password_hash.encode("utf-8"))
@@ -36,9 +41,6 @@ class Usuario(UserMixin, db.Model):
             return None
         return Usuario.query.filter_by(email=email).first()
 
-
-
-from app import login_manager
 
 @login_manager.user_loader
 def load_user(user_id):

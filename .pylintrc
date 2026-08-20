@@ -1,0 +1,16 @@
+[MAIN]
+ignore=venv,.venv,tests
+
+[MESSAGES CONTROL]
+disable=
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    import-outside-toplevel,
+    too-many-arguments,
+    too-many-positional-arguments,
+    too-few-public-methods,
+    cyclic-import
+
+[FORMAT]
+max-line-length=110
