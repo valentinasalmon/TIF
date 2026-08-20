@@ -1,5 +1,7 @@
-from app import db
 from datetime import datetime
+
+from app import db
+
 
 class Caso(db.Model):
     __tablename__ = "casos"
@@ -9,7 +11,8 @@ class Caso(db.Model):
     titulo = db.Column(db.String(200), nullable=False)
     descripcion = db.Column(db.Text, nullable=True)
     tipo = db.Column(db.String(50), nullable=False)  # transito, laboral
-    estado = db.Column(db.String(30), nullable=False, default="abierto")  # abierto, en_analisis, cerrado
+    # abierto, en_analisis, cerrado
+    estado = db.Column(db.String(30), nullable=False, default="abierto")
     fecha_creacion = db.Column(db.DateTime, default=datetime.utcnow)
 
     usuario_id = db.Column(db.Integer, db.ForeignKey("usuarios.id"), nullable=False)

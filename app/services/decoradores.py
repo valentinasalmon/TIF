@@ -2,6 +2,7 @@ from functools import wraps
 from flask import abort
 from flask_login import current_user
 
+
 def requiere_rol(*roles_permitidos):
     def decorador(f):
         @wraps(f)
