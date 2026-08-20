@@ -1,0 +1,13 @@
+# Copiá este archivo a terraform.tfvars (que está gitignored) y completá tus valores.
+# NUNCA commitees terraform.tfvars real: tiene tu password de base de datos.
+
+aws_region = "us-east-1"
+
+# Conseguí tu IP pública con: curl ifconfig.me
+allowed_ip = "TU_IP_PUBLICA/32"
+
+db_password = "elegí-una-contraseña-fuerte-acá"
+
+# Los nombres de bucket S3 son globalmente únicos en toda AWS.
+# Si "tif-evidencia-fotografica" ya está tomado, elegí otro (ej. con tu usuario).
+evidencia_bucket_name = "tif-evidencia-fotografica"
