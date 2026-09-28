@@ -2,6 +2,15 @@
 #
 # Módulo de análisis forense de metadatos (EXIF / XMP / PNG).
 # Extrae campos, aplica reglas de severidad, clasifica y persiste el resultado.
+#
+# Cambios respecto de la versión anterior:
+#  - extraer_exif() ahora devuelve también los nombres planos de los campos
+#    (Make, Software, DateTimeOriginal...). Con "-G0:1" ExifTool antepone el
+#    grupo ("EXIF:IFD0:Make") y los validadores, que buscan "Make", no
+#    encontraban nada en JPEG/HEIC.
+#  - validar_software() y validar_makernotes() convierten a str() antes de
+#    .lower(): ExifTool devuelve números JSON para valores como "12".
+#  - Las llamadas a ExifTool fuerzan encoding UTF-8 (Windows usa cp1252).
 
 import subprocess
 import json
@@ -71,19 +80,29 @@ def detectar_formato(imagen_path):
 
 def extraer_exif(imagen_path):
     """
-    Ejecuta ExifTool sobre el archivo y devuelve un diccionario plano.
-    Requiere que el binario `exiftool` esté instalado en el sistema.
+    Ejecuta ExifTool sobre el archivo y devuelve un diccionario.
+
+    Con "-G0:1" las claves llegan con grupo ("EXIF:IFD0:Make"). Se conservan
+    esas claves (el chequeo de MakerNotes las necesita) y se agregan además los
+    nombres planos ("Make") para que los validadores los encuentren. Si un
+    nombre plano aparece en varios grupos, prevalece la primera aparición.
+
     Si no hay bloque EXIF, devuelve {} (no es un error).
     """
     try:
         resultado = subprocess.run(
             [EXIFTOOL_PATH, "-json", "-G0:1", imagen_path],
-            capture_output=True, text=True, timeout=15,
+            capture_output=True, encoding="utf-8", errors="replace", timeout=15,
         )
         datos = json.loads(resultado.stdout)
-        return datos[0] if datos else {}
+        crudo = datos[0] if datos else {}
     except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
         return {}
+
+    plano = dict(crudo)
+    for clave, valor in crudo.items():
+        plano.setdefault(clave.split(":")[-1], valor)
+    return plano
 
 
 def extraer_xmp(imagen_path):
@@ -91,7 +110,7 @@ def extraer_xmp(imagen_path):
     try:
         resultado = subprocess.run(
             [EXIFTOOL_PATH, "-json", "-XMP:CreatorTool", "-XMP:History", imagen_path],
-            capture_output=True, text=True, timeout=15,
+            capture_output=True, encoding="utf-8", errors="replace", timeout=15,
         )
         datos = json.loads(resultado.stdout)
         return datos[0] if datos else {}
@@ -123,8 +142,8 @@ def obtener_fecha_creacion_sistema(imagen_path):
 # ============================================================
 
 def validar_software(datos_exif, datos_xmp):
-    software = (datos_exif.get("Software") or "").lower()
-    creator_tool = (datos_xmp.get("CreatorTool") or "").lower()
+    software = str(datos_exif.get("Software") or "").lower()
+    creator_tool = str(datos_xmp.get("CreatorTool") or "").lower()
 
     for nombre in SOFTWARE_CONOCIDO:
         if nombre in software or nombre in creator_tool:
@@ -167,7 +186,7 @@ def validar_chunks_generacion(chunks_png):
 
 
 def validar_makernotes(datos_exif):
-    make = (datos_exif.get("Make") or "").lower()
+    make = str(datos_exif.get("Make") or "").lower()
     tiene_makernotes = any(
         k for k in datos_exif.keys() if "makernotes" in k.lower()
     )
