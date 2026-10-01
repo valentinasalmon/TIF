@@ -163,7 +163,7 @@ def _buscar(carpeta, prefijo):
 
 
 @pytest.mark.skipif(not _exiftool_disponible(), reason="ExifTool no disponible")
-@pytest.mark.parametrize("carpeta", ["canales", "canales_gemini"])
+@pytest.mark.parametrize("carpeta", ["canales_gpt", "canales_gemini"])
 @pytest.mark.parametrize("prefijo,con_manifiesto", ESPERADO_POR_PREFIJO.items())
 def test_regresion_prueba_de_canales(carpeta, prefijo, con_manifiesto):
     base = IMAGENES_PRUEBA / carpeta

@@ -1,0 +1,5 @@
+{
+  "resultado": "sin_manifiesto",
+  "excepcion": "_C2paManifestNotFound",
+  "mensaje": "ManifestNotFound: no JUMBF data found"
+}
